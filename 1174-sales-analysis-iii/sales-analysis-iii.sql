@@ -1,10 +1,14 @@
-SELECT DISTINCT p.product_id, p.product_name
-FROM Product p
-JOIN Sales s ON p.product_id = s.product_id
-WHERE s.sale_date BETWEEN '2019-01-01' AND '2019-03-31'
-  AND NOT EXISTS (
-    SELECT 1
-    FROM Sales s2
-    WHERE s2.product_id = p.product_id
-      AND (s2.sale_date < '2019-01-01' OR s2.sale_date > '2019-03-31')
-  );
+SELECT
+    P.product_id,
+    P.product_name
+FROM
+    Product AS P
+JOIN
+    Sales AS S ON P.product_id = S.product_id
+GROUP BY
+    P.product_id,
+    P.product_name
+HAVING
+    SUM(CASE WHEN S.sale_date >= '2019-01-01' AND S.sale_date <= '2019-03-31' THEN 1 ELSE 0 END) > 0
+    AND
+    SUM(CASE WHEN S.sale_date < '2019-01-01' OR S.sale_date > '2019-03-31' THEN 1 ELSE 0 END) = 0;
