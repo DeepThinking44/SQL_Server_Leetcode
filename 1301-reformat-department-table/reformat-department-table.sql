@@ -1,21 +1,27 @@
 SELECT 
-    d.id,
-    MAX(CASE WHEN d.month = 'Jan' THEN d.revenue END) AS Jan_Revenue,
-    MAX(CASE WHEN d.month = 'Feb' THEN d.revenue END) AS Feb_Revenue,
-    MAX(CASE WHEN d.month = 'Mar' THEN d.revenue END) AS Mar_Revenue,
-    MAX(CASE WHEN d.month = 'Apr' THEN d.revenue END) AS Apr_Revenue,
-    MAX(CASE WHEN d.month = 'May' THEN d.revenue END) AS May_Revenue,
-    MAX(CASE WHEN d.month = 'Jun' THEN d.revenue END) AS Jun_Revenue,
-    MAX(CASE WHEN d.month = 'Jul' THEN d.revenue END) AS Jul_Revenue,
-    MAX(CASE WHEN d.month = 'Aug' THEN d.revenue END) AS Aug_Revenue,
-    MAX(CASE WHEN d.month = 'Sep' THEN d.revenue END) AS Sep_Revenue,
-    MAX(CASE WHEN d.month = 'Oct' THEN d.revenue END) AS Oct_Revenue,
-    MAX(CASE WHEN d.month = 'Nov' THEN d.revenue END) AS Nov_Revenue,
-    MAX(CASE WHEN d.month = 'Dec' THEN d.revenue END) AS Dec_Revenue
-FROM 
-    Department AS d
-GROUP BY 
-    d.id
-ORDER BY 
-    d.id;
-
+    id,
+    [Jan] AS Jan_Revenue,
+    [Feb] AS Feb_Revenue,
+    [Mar] AS Mar_Revenue,
+    [Apr] AS Apr_Revenue,
+    [May] AS May_Revenue,
+    [Jun] AS Jun_Revenue,
+    [Jul] AS Jul_Revenue,
+    [Aug] AS Aug_Revenue,
+    [Sep] AS Sep_Revenue,
+    [Oct] AS Oct_Revenue,
+    [Nov] AS Nov_Revenue,
+    [Dec] AS Dec_Revenue
+FROM (
+    SELECT 
+        id,
+        month,
+        revenue
+    FROM 
+        Department
+) AS SourceTable
+PIVOT (
+    MAX(revenue)
+    FOR month IN ([Jan], [Feb], [Mar], [Apr], [May], [Jun], [Jul], [Aug], [Sep], [Oct], [Nov], [Dec])
+) AS PivotTable
+ORDER BY id;
